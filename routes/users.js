@@ -1,9 +1,40 @@
-var express = require('express');
-var router = express.Router();
+const mongoose = require('mongoose');
+const plm = require('passport-local-mongoose');
+mongoose.connect("mongodb://127.0.0.1:27017/pinterest_clone");
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  password: {
+    type: String,
+    // required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  fullname: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  dp: {
+    type: String, // URL or path to the display picture
+    default: ''
+  },
+  posts: [{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Post'
+  }
+  ]
+}, { timestamps: true });
 
-module.exports = router;
+UserSchema.plugin(plm); 
+
+module.exports = mongoose.model('User', UserSchema);
